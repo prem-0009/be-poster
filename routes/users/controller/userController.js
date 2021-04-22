@@ -28,10 +28,9 @@ module.exports = {
   },
 
   login: async (req, res) => {
-    
     // console.log(req.body);
     try {
-      let foundUser = await findOneUser(req.body.email);
+      let foundUser = await findOneUser(req.body.username);
       if (foundUser === 404) {
         throw {
           status: 500,
@@ -56,6 +55,22 @@ module.exports = {
       res.status(error.status).json({
         message: error.message,
       });
+    }
+  },
+
+  changeEmail: async (req, res) => {
+    console.log(req.body);
+    try {
+      let foundUser = await findOneUser(req.body.userName);
+      console.log(foundUser);
+      foundUser.email = req.body.newEmail;
+
+      await foundUser.save();
+      console.log("saveNewUser", foundUser);
+
+      res.status(200).json(foundUser);
+    } catch (e) {
+      console.log(e);
     }
   },
 };

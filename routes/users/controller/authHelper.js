@@ -32,9 +32,9 @@ async function errorHandler(error) {
     };
 }
 
-async function findOneUser(email) {
+async function findOneUser(username) {
     try {
-        let foundUser = await User.findOne({email});
+        let foundUser = await User.findOne({username});
         if (!foundUser) {
             return 404;
         }

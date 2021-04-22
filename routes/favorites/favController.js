@@ -12,7 +12,7 @@ module.exports = {
     // console.log(user);
     let add = req.body.movie;
     try {
-      let favMovie = {
+      let favMovies = {
         _id: add.id,
         // original_title:add.original_title,
         overview: add.overview,
@@ -21,21 +21,22 @@ module.exports = {
         title: add.title,
       };
       //   console.log(favMovie);
+      console.log("here");
 
       let foundUser = await findUserWithUserName(user);
       if (foundUser) {
-        foundUser.favMovies.push(favMovie);
+        foundUser.favMovies.push(favMovies);
         foundUser.save();
         console.log("here is adding movies");
 
-        res.status(200).json({ favMovie }); //change the response to success
+        res.status(200).json({ favMovies }); //change the response to success
       }
       if (!foundUser) {
         //if user doesn't exit in list create new user and his list
         let newUser = await new Favorites({
           username: user,
           _id: req.body.user.id,
-          favMovies: [favMovie],
+          favMovies: [{ ...favMovies }],
         });
 
         let saveUser = await newUser.save(); //change the response to success
@@ -82,7 +83,7 @@ module.exports = {
       //   let findMovieToDelete = await findUser.favMovie.remove(req.params.mId);
       let resultList = findUser.favMovies.pull({ _id: req.params.MId });
 
-      res.status(200).json(resultList)
+      res.status(200).json(resultList);
 
       findUser.save();
 
@@ -92,7 +93,7 @@ module.exports = {
 
         await Favorites.findByIdAndRemove({ _id: req.params.uId });
       }
-    //   res.json(200).json(findUser);
+      //   res.json(200).json(findUser);
       //   console.log(findUser.favMovies);
       console.log("-----------------------------------------------");
 
@@ -116,6 +117,19 @@ module.exports = {
     // }
   },
 
+  getAllFavorites: async (req, res) => {
+    console.log(req.body);
+
+    try {
+      let allFavorites = await Favorites.find({});
+      console.log("get all the favorites");
+      console.log(allFavorites);
+      res.status(200).json(allFavorites);
+    } catch (e) {
+      console.log(e);
+      res.status(500).json(e);
+    }
+  },
   //   getAllTalks: async (req, res) => {
 
   //     try {
